@@ -13,7 +13,7 @@ export const typeOrmAsyncConfig = {
     password: configService.get('DB_PASSWORD'),
     database: configService.get('DB_DATABASE'),
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    synchronize: true, // ⚠️ true solo en desarrollo
+    synchronize: true, 
     autoLoadEntities: true,
   }),
 };
