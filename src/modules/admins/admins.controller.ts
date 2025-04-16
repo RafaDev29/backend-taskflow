@@ -8,17 +8,17 @@ import { JwtRoleGuard } from '../auth/jwt/role.guard';
 @UseGuards(JwtRoleGuard('ROOT'))
 @Controller('admins')
 export class AdminsController {
-  constructor(private readonly adminsService: AdminsService) {}
+  constructor(private readonly adminsService: AdminsService) { }
 
   @Post('add')
   async create(@Body() dto: CreateAdminDto) {
     return await this.adminsService.create(dto);
- 
+
   }
 
-  @Get()
-  findAll() {
-    return this.adminsService.findAll();
+  @Get('all')
+  async findAll() {
+    return await this.adminsService.findAll();
   }
 
   @Get(':id')
@@ -26,13 +26,15 @@ export class AdminsController {
     return this.adminsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminsService.update(+id, updateAdminDto);
+  @Patch('update/:id')
+  async update(@Param('id') id: string, @Body() dto: UpdateAdminDto) {
+    return await this.adminsService.update(+id, dto);
+  
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adminsService.remove(+id);
+  @Delete('delete/:id')
+  async remove(@Param('id') id: string) {
+    return await this.adminsService.remove(+id);
+   
   }
 }

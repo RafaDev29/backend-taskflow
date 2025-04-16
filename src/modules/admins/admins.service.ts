@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -42,19 +42,60 @@ export class AdminsService {
     return this.adminRepo.save(admin);
   }
 
-  findAll() {
-    return `This action returns all admins`;
+  async findAll() {
+    const admins = await this.adminRepo.find({
+      relations: ['user'], 
+      select: {
+        adminId: true,
+        name: true,
+        document: true,
+        user: {
+          userId: true,
+          username: true,
+          role: true,
+        },
+      },
+    });
+  
+    return admins;
   }
+  
 
   findOne(id: number) {
     return `This action returns a #${id} admin`;
   }
 
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
+  async update(id: number, dto: UpdateAdminDto) {
+    const admin = await this.adminRepo.findOne({
+      where: { adminId: id },
+      relations: ['user'],
+    });
+  
+    if (!admin) {
+      throw new NotFoundException('Administrador no encontrado');
+    }
+  
+    if (dto.name) admin.name = dto.name;
+    if (dto.document) admin.document = dto.document;
+    if (dto.username) admin.user.username = dto.username;
+  
+    await this.userRepo.save(admin.user);
+    return this.adminRepo.save(admin);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+  async remove(id: number) {
+    const admin = await this.adminRepo.findOne({
+      where: { adminId: id },
+      relations: ['user'],
+    });
+  
+    if (!admin) {
+      throw new NotFoundException('Administrador no encontrado');
+    }
+  
+    await this.userRepo.delete(admin.user.userId); 
+    await this.adminRepo.delete(id); 
+  
+    return { message: 'Administrador eliminado correctamente' };
   }
 }
