@@ -1,14 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards } from '@nestjs/common';
 import { EvidenceService } from './evidence.service';
 import { CreateEvidenceDto } from './dto/create-evidence.dto';
 import { UpdateEvidenceDto } from './dto/update-evidence.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { JwtRoleGuard } from '../auth/jwt/role.guard';
 
+
+
+@UseGuards(JwtRoleGuard('OPERATOR'))
 @Controller('evidence')
 export class EvidenceController {
-  constructor(private readonly evidenceService: EvidenceService) {}
+  constructor(private readonly evidenceService: EvidenceService) { }
 
-  
+
   @Post('upload')
   @UseInterceptors(FilesInterceptor('photos'))
   async upload(
@@ -22,7 +26,7 @@ export class EvidenceController {
   async findByTask(@Param('id') id: string) {
     return this.evidenceService.findByTask(+id);
   }
-  
+
 
   @Post()
   create(@Body() createEvidenceDto: CreateEvidenceDto) {
@@ -48,5 +52,5 @@ export class EvidenceController {
   async remove(@Param('id') id: string) {
     return this.evidenceService.remove(+id);
   }
-  
+
 }
