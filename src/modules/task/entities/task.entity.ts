@@ -1,5 +1,12 @@
-
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Admin } from '../../admins/entities/admin.entity';
 import { Operator } from '../../operators/entities/operator.entity';
 
@@ -24,5 +31,10 @@ export class Task {
   @ManyToOne(() => Operator, { nullable: true })
   @JoinColumn({ name: 'assignedTo' })
   assignedTo: Operator | null;
-  
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }

@@ -7,12 +7,13 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AdminsModule } from './modules/admins/admins.module';
 import { OperatorsModule } from './modules/operators/operators.module';
 import { TaskModule } from './modules/task/task.module';
+import { EvidenceModule } from './modules/evidence/evidence.module';
 
 @Module({
   imports: [ ConfigModule.forRoot({
     isGlobal: true,
   }),
-  TypeOrmModule.forRootAsync(typeOrmAsyncConfig), UsersModule, AuthModule, AdminsModule, OperatorsModule, TaskModule],
+  TypeOrmModule.forRootAsync(typeOrmAsyncConfig), UsersModule, AuthModule, AdminsModule, OperatorsModule, TaskModule, EvidenceModule],
   
 })
 export class AppModule {}
